@@ -490,16 +490,9 @@
       width: 100%;
       border-collapse: collapse;
       table-layout: fixed;
-      margin-top: 10px;
+      margin-top: 12px;
       font-size: 11px;
       line-height: 1.35;
-    }
-
-    .report-overview-summary {
-      margin-top: 4px;
-      color: #5c667a;
-      font-size: 12px;
-      font-weight: 700;
     }
 
     .report-overview-table th,
@@ -670,7 +663,7 @@
 </head>
 <body>
   <header>
-    <h1>FCN 詢價圖表產生器 <span style="font-size:12px;color:#5c667a;">v2026.07.13.1</span></h1>
+    <h1>FCN 詢價圖表產生器 <span style="font-size:12px;color:#5c667a;">v2026.07.03.4</span></h1>
   </header>
 
   <div class="workspace">
@@ -1284,49 +1277,20 @@
     function overviewColumnLabel(column) {
       const id = column.id || "";
       if (id === "currency") return "CCY";
-      if (id === "code1") return "BBG Code 1";
-      if (id === "code2") return "BBG Code 2";
-      if (id === "code3") return "BBG Code 3";
-      if (id === "guaranteedPeriods") return "Guaranteed";
+      if (id === "guaranteedPeriods") return "Guaranteed Periods";
       if (id === "koBarrier") return "KO Barrier";
       if (id === "coupon") return "Coupon p.a.";
-      if (id === "couponPa") return "Coupon p.a.";
-      if (id === "participationRate") return "PR";
-      if (id === "bonusCoupon") return "Bonus Coupon (flat)";
-      if (id === "conditionalCoupon") return "Conditional Coupon";
-      if (id === "couponBarrier") return "Coupon Barrier";
-      if (id === "putStrike") return "Put Strike";
-      if (id === "kiBarrier") return "KI Barrier";
+      if (id === "participationRate") return "Participation";
       if (id === "tenor") return "Tenor";
       return column.label;
     }
 
-    function overviewGroupInfo(quote) {
-      const product = quoteProductName(quote).toUpperCase();
-      if (isBenProductName(product)) return { key: "ben", title: "BP / BEN" };
-      if (/(?:TWIN|BULL|BEAR)/.test(product)) return { key: "twinwin", title: "TWINWIN / BULL BEAR" };
-      if (/(?:FCN|WRA|RANGE|ACCRUAL)/.test(product)) return { key: "fcn-wra", title: "FCN / WRA" };
-      return { key: `product:${product}`, title: product || "其他產品" };
-    }
-
-    function overviewQuoteGroups(quotes) {
-      const groups = new Map();
-      quotes.forEach(quote => {
-        const info = overviewGroupInfo(quote);
-        if (!groups.has(info.key)) groups.set(info.key, { ...info, quotes: [] });
-        groups.get(info.key).quotes.push(quote);
-      });
-      return [...groups.values()];
-    }
-
     function overviewTableHtml(quotes, generatedAt) {
-      return overviewQuoteGroups(quotes).map(group => {
-        const columns = overviewColumns(group.quotes);
-        return `
+      const columns = overviewColumns(quotes);
+      return `
         <section class="report-page">
-          <h2>報價總表 - ${group.title}</h2>
+          <h2>報價總表</h2>
           <div class="report-generated-at">產出時間：${generatedAt}</div>
-          <div class="report-overview-summary">本頁 ${group.quotes.length} 組報價</div>
           <table class="report-overview-table">
             <thead>
               <tr>
@@ -1334,7 +1298,7 @@
               </tr>
             </thead>
             <tbody>
-              ${group.quotes.map(quote => `
+              ${quotes.map(quote => `
                 <tr>
                   ${columns.map(column => `<td>${overviewValueForColumn(quote, column)}</td>`).join("")}
                 </tr>
@@ -1343,7 +1307,6 @@
           </table>
         </section>
       `;
-      }).join("");
     }
 
     function quotePreviewText(quote) {
@@ -3030,7 +2993,7 @@
       const reportBlocks = [];
       const generatedAt = reportGeneratedAt();
       state.pdfReport.innerHTML = overviewTableHtml(quotesForReport, generatedAt);
-      state.reportImages.push(...await createOverviewPageImages(quotesForReport, generatedAt));
+      state.reportImages.push(await createOverviewPageImage(quotesForReport, generatedAt));
 
       for (let i = 0; i < quotesForReport.length; i++) {
         const quote = quotesForReport[i];
@@ -3464,11 +3427,7 @@
       return images;
     }
 
-    async function createOverviewPageImages(quotes, generatedAt) {
-      return overviewQuoteGroups(quotes).map(group => createOverviewPageImage(group.quotes, generatedAt, group.title));
-    }
-
-    function createOverviewPageImage(quotes, generatedAt, groupTitle = "") {
+    function createOverviewPageImage(quotes, generatedAt) {
       const { canvas, ctx, pageW, pageH } = createReportCanvas();
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, pageW, pageH);
@@ -3477,7 +3436,7 @@
       ctx.textAlign = "left";
       ctx.textBaseline = "alphabetic";
       ctx.font = "700 46px Arial, 'Noto Sans TC', sans-serif";
-      ctx.fillText(`報價總表${groupTitle ? ` - ${groupTitle}` : ""}`, 60, 84);
+      ctx.fillText("報價總表", 60, 84);
       ctx.fillStyle = "#5c667a";
       ctx.font = "700 20px Arial, 'Noto Sans TC', sans-serif";
       ctx.fillText(`產出時間：${generatedAt}`, 60, 118);
