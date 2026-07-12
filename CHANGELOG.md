@@ -1,5 +1,11 @@
 # Changelog
 
+## v2026.07.13.1
+
+- Split mixed-product quote overviews into separate BP/BEN, FCN/WRA, and TWINWIN/Bull Bear pages so unrelated fields are not compressed into one oversized table.
+- Removed empty columns within each product-family overview and used shorter display labels without changing the parsed parameters.
+- Applied the same grouping to the on-screen preview and generated quote PDF while preserving the existing historical backtest, Monte Carlo, and conclusion features.
+
 ## v2026.07.09.2
 
 - **智能結論面板**：歷史回測或蒙地卡羅任一完成後自動顯示 `#conclusionPanel`，列出：
