@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: fcn-pricing-tool
+    plan: free
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 24.14.1
+      - key: FCN_PIN
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false

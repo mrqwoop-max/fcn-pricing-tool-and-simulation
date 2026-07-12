@@ -1,0 +1,16 @@
+{
+  "name": "fcn-pricing-tool",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node fcn-server.mjs",
+    "dev": "PORT=4179 node fcn-server.mjs"
+  },
+  "dependencies": {
+    "pdf-lib": "^1.17.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
