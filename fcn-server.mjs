@@ -8,6 +8,7 @@ import { PDFDocument } from "pdf-lib";
 import { isBonusEnhance, optionalNumber, runBacktests, runMonteCarlos, validateBacktestProduct } from "./fcn-backtest-core.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const appVersion = (await fs.readFile(path.join(__dirname, "VERSION"), "utf8")).trim();
 const reportsDir = path.join(__dirname, "outputs", "reports");
 const port = Number(process.env.PORT || 4173);
 const host = process.env.HOST || "0.0.0.0";
@@ -385,7 +386,11 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (url.pathname === "/health") {
-      return send(res, 200, "ok", { "Content-Type": "text/plain;charset=utf-8" });
+      return send(res, 200, `ok ${appVersion}`, { "Content-Type": "text/plain;charset=utf-8" });
+    }
+
+    if (url.pathname === "/version") {
+      return send(res, 200, appVersion, { "Content-Type": "text/plain;charset=utf-8" });
     }
 
     if (url.pathname === "/login") {
