@@ -5,6 +5,7 @@
 - Split mixed-product quote overviews into separate BP/BEN, FCN/WRA, and TWINWIN/Bull Bear pages so unrelated fields are not compressed into one oversized table.
 - Removed empty columns within each product-family overview and used shorter display labels without changing the parsed parameters.
 - Applied the same grouping to the on-screen preview and generated quote PDF while preserving the existing historical backtest, Monte Carlo, and conclusion features.
+- Added the deployed version to `/health` and a public `/version` endpoint so the live Render release can be verified without bypassing PIN protection.
 
 ## v2026.07.09.2
 
